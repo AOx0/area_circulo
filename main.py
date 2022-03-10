@@ -1,12 +1,46 @@
 from manim import *
+from typing import NewType
 
 RADIO = 1
+Vertical = NewType('Vertical', bool)
+Horizontal = NewType('Horizontal', bool)
+VERTICAL: Vertical = Vertical(True)
+HORIZONTAL: Horizontal = Horizontal(False)
 
 
 def fo_all(self):
-    self.play(
-        *[FadeOut(mob) for mob in self.mobjects]
-    )
+    self.play(*[FadeOut(mob) for mob in self.mobjects])
+
+
+def generate_rectangles(number: int, sentido: Vertical | Horizontal = HORIZONTAL) -> VGroup:
+    val1 = 1/number
+    val2 = lambda r: TAU * (r/number)
+    horizontal = sentido == HORIZONTAL
+
+    rectangles = [
+        Rectangle(width=val1 if horizontal else val2(r), height=val2(r) if horizontal else val1)
+        .set_stroke(RED, 1.5)
+        .shift(DOWN * 3)
+        .shift(LEFT * (2 if horizontal else 0))
+        for r in list(range(0, RADIO * number + 1))
+    ]
+
+    if not horizontal:
+        for j in range(1, len(rectangles)):
+            rectangles[j].next_to(rectangles[j - 1], DOWN, 0)
+
+    rectangles = VGroup(*rectangles)
+
+    if horizontal:
+        rectangles.arrange(RIGHT, center=False, aligned_edge=DOWN, buff=0)
+    else:
+        rectangles.arrange(DOWN, center=True, buff=0)
+
+    if not horizontal:
+        for j in range(0, len(rectangles)):
+            rectangles[j].shift(DOWN * 0.5)
+
+    return rectangles
 
 
 class AreaCirculo(Scene):
@@ -18,132 +52,49 @@ class AreaCirculo(Scene):
         circulo = circulo.set_stroke(circulo.color, 1.5)
         linea = Line([0, 0, 0], [RADIO, 0, 0])
         ra = MathTex("r").shift(RIGHT * 0.5).shift(UP * 0.5)
+        f_out = lambda r: [FadeOut(e) for e in r]
+        f_in = lambda r: [FadeIn(e) for e in r]
+        cir = lambda number:  [Circle(radius=r/number).set_stroke(circulo.color, 1.5).shift(UP * 2) for r in list(range(1, RADIO * number, 1))]
 
         self.play(Create(circulo))
         self.wait(0.2)
 
         self.play(circulo.animate.set_fill(circulo.color, 1.5), Write(ra), Create(linea))
 
-        circles = [Circle(radius=r * 0.1).set_stroke(circulo.color, 1.5) for r in list(range(1, RADIO * 10, 1))]
-        c_circles4 = [FadeIn(circle) for circle in circles]
-
+        circles1 = [Circle(radius=r * 0.1).set_stroke(circulo.color, 1.5) for r in list(range(1, RADIO * 10, 1))]
         self.play(circulo.animate.set_fill(circulo.color, 0), FadeOut(ra), FadeOut(linea))
-        self.play(*c_circles4)
+        self.play(*f_in(circles1))
 
-        rectangles = [
-            Rectangle(width=r * 0.1 * TAU, height=0.1).set_stroke(circulo.color, 1.5)
-            for r in list(range(1, RADIO * 10, 1))
-        ]
-        rectangles += [Rectangle(width=TAU * RADIO, height=0.1).set_stroke(circulo.color, 1.5)]
+        rectangles = generate_rectangles(10, VERTICAL)
+        t_circle = [circle.animate.shift(UP * 2) for circle in circles1]
+        self.play(circulo.animate.shift(UP * 2), *t_circle)
 
-        for j in range(1, len(rectangles)):
-            rectangles[j].next_to(rectangles[j - 1], DOWN, 0)
-
-        t_circle = [circle.animate.shift(UP * 2) for circle in circles]
-
-        self.play(
-            circulo.animate.shift(UP * 2),
-            *t_circle
-        )
-
-        out_rect2 = [FadeOut(rect) for rect in rectangles]
-
-        c_transform = [TransformFromCopy(circles[j], rectangles[j]) for j in range(len(circles))]
-
+        c_transform = [TransformFromCopy(circles1[j], rectangles[j]) for j in range(len(circles1))]
         self.play(TransformFromCopy(circulo, rectangles[len(rectangles) - 1]), *c_transform)
 
-        circles = [Circle(radius=r * 0.1).set_stroke(circulo.color, 1.5).shift(UP * 2) for r in
-                   list(range(1, RADIO * 10, 1))]
-        c_circles = [FadeIn(circle) for circle in circles]
+        for val in [15, 20, 40, 60]:
+            circles_new = cir(val)
+            rectangles_new = generate_rectangles(val, VERTICAL)
+            self.play(Transform(rectangles, rectangles_new), *f_in(circles_new))
+            self.wait(0.2)
 
-        rectangles = [Rectangle(width=TAU * r * 0.1, height=0.1).set_stroke(circulo.color, 1.5) for r in
-                      list(range(1, RADIO * 10, 1))]
-        rectangles += [Rectangle(width=TAU * RADIO, height=0.1).set_stroke(circulo.color, 1.5)]
-
-        for j in range(1, len(rectangles)):
-            rectangles[j].next_to(rectangles[j - 1], DOWN, 0)
-
-        c_rectangles = [FadeIn(rect) for rect in rectangles]
-
-        out_rect = [FadeOut(rect) for rect in rectangles]
-
-        self.play(*c_rectangles, *c_circles, *out_rect)
-
-        self.wait(0.2)
-
-        circles = [Circle(radius=r * 0.05).set_stroke(circulo.color, 1.5).shift(UP * 2) for r in
-                   list(range(1, RADIO * 10 * 2, 1))]
-        c_circles = [FadeIn(circle) for circle in circles]
-
-        rectangles = [Rectangle(width=r * 0.05 * TAU, height=0.05).set_stroke(circulo.color, 1.5) for r in
-                      list(range(1, RADIO * 10 * 2, 1))]
-        rectangles += [Rectangle(width=TAU * RADIO, height=0.05).set_stroke(circulo.color, 1.5)]
-
-        for j in range(1, len(rectangles)):
-            rectangles[j].next_to(rectangles[j - 1], DOWN, 0)
-
-        c_rectangles = [FadeIn(rect) for rect in rectangles]
-
-        self.play(*c_rectangles, *c_circles, *out_rect, *out_rect2)
-
-        self.wait(0.2)
-
-        out_rect = [FadeOut(rect) for rect in rectangles]
-
-        self.wait(0.2)
-
-        circles = [Circle(radius=r * 0.025).set_stroke(circulo.color, 1.5).shift(UP * 2) for r in
-                   list(range(1, RADIO * 10 * 4, 1))]
-        c_circles = [FadeIn(circle) for circle in circles]
-
-        rectangles = [Rectangle(width=r * 0.025 * TAU, height=0.025).set_stroke(circulo.color, 1.5) for r in
-                      list(range(1, RADIO * 10 * 4, 1))]
-        rectangles += [Rectangle(width=TAU * RADIO, height=0.025).set_stroke(circulo.color, 1.5)]
-
-        for j in range(1, len(rectangles)):
-            rectangles[j].next_to(rectangles[j - 1], DOWN, 0)
-
-        c_rectangles = [FadeIn(rect) for rect in rectangles]
-
-        self.play(*c_rectangles, *c_circles, *out_rect)
-
-        self.wait(0.2)
-
-        filled_triangle_points = [[-TAU * RADIO / 2, -1, 0], [0, RADIO - 1, 0], [TAU * RADIO / 2, -1, 0]]
-
-        filled_triangle = Polygon(
-            *filled_triangle_points, color=circulo.color).set_fill(circulo.color, 1.5)
-
-        out_rect = [FadeOut(rect) for rect in rectangles]
-
-        self.play(FadeIn(filled_triangle), circulo.animate.set_fill(circulo.color, 1.0), *out_rect)
-
+        puntos = [[-TAU * RADIO / 2, 0, 0], [0, RADIO, 0], [TAU * RADIO / 2, 0, 0]]
+        triangulo = Polygon(*puntos, color=circulo.color).set_fill(circulo.color, 1.5).shift(DOWN)
+        self.play(FadeIn(triangulo), circulo.animate.set_fill(circulo.color, 1.0), *f_out(rectangles))
         self.wait(0.5)
 
-        filled_triangle_points2 = [[-TAU * RADIO / 2, -1, 0], [-TAU * RADIO / 2, RADIO - 1, 0],
-                                   [TAU * RADIO / 2, -1, 0]]
-
-        filled_triangle2 = Polygon(
-            *filled_triangle_points2, color=circulo.color).set_fill(circulo.color, 1.5)
-
-        self.play(Transform(filled_triangle, filled_triangle2))
-
-        self.wait(0.5)
-
-        self.play(FadeOut(filled_triangle2))
-
+        puntos = [[-TAU * RADIO / 2, 0, 0], [-TAU * RADIO / 2, RADIO, 0], [TAU * RADIO / 2, 0, 0]]
+        triangulo2 = Polygon(*puntos, color=circulo.color).set_fill(circulo.color, 1.5).shift(DOWN)
         radio = MathTex(r"r").shift(RIGHT * (- 0.5 - TAU * RADIO / 2)).shift(DOWN / 2)
         base = MathTex(r"2 \pi r").shift(DOWN - 0.5)
-
-        self.play(Write(radio), Write(base))
-
-        self.wait()
+        self.play(Transform(triangulo, triangulo2), Write(radio), Write(base))
+        self.wait(1)
 
         fo_all(self)
 
     def parte2(self):
-        texto1 = Tex(r"Base   := $2 \pi r$")
-        texto2 = Tex(r"Altura := $r$      ")
+        texto1 = Tex(r"b := $2 \pi r$")
+        texto2 = Tex(r"a := $r$      ")
 
         texto1.next_to(texto2, UP, 0.5)
 
@@ -158,14 +109,11 @@ class AreaCirculo(Scene):
         texto3 = Tex(r"$\pi r \times r$")
         texto4 = Tex(r"$\pi r^2$")
         self.play(Write(texto1))
-
         self.wait(1)
-        self.play(Transform(texto1, texto2))
-        self.wait(2)
-        self.play(Transform(texto1, texto3))
-        self.wait(3)
-        self.play(Transform(texto1, texto4))
-        self.wait(2)
+
+        for t in [texto2, texto3, texto4]:
+            self.play(Transform(texto1, t, run_time=0.2))
+            self.wait(2)
 
         fo_all(self)
 
@@ -179,81 +127,14 @@ class AreaCirculo(Scene):
         self.add_foreground_mobjects(xax, yax)
         self.play(Write(eq))
 
-        rectangles = VGroup(*[
-            Rectangle(width=0.5, height=TAU * r * 0.5)
-            .set_stroke(RED, 1.5)
-            .shift(DOWN * 3)
-            .shift(LEFT * 2)
-
-            for r in list(range(0, 2, 1))
-        ])
-
-        rectangles.arrange(RIGHT, center=False, aligned_edge=DOWN, buff=0)
-
+        rectangles = generate_rectangles(2)
         for rect in rectangles:
-            self.play(FadeIn(rect, run_time=0.2))
-
+            self.play(FadeIn(rect))
         self.wait(0.5)
 
-        rectangles1 = VGroup(*[
-            Rectangle(width=0.25, height=TAU * r * 0.25)
-            .set_stroke(RED, 1.5)
-            .shift(DOWN * 3)
-            .shift(LEFT * 2)
-
-            for r in list(range(0, 4, 1))
-        ])
-
-        rectangles1.arrange(RIGHT, center=False, aligned_edge=DOWN, buff=0)
-        self.play(Transform(rectangles, rectangles1))
-
-        rectangles1 = VGroup(*[
-            Rectangle(width=0.125, height=TAU * r * 0.125)
-            .set_stroke(RED, 1.5)
-            .shift(DOWN * 3)
-            .shift(LEFT * 2)
-
-            for r in list(range(0, 8, 1))
-        ])
-
-        rectangles1.arrange(RIGHT, center=False, aligned_edge=DOWN, buff=0)
-        self.play(Transform(rectangles, rectangles1))
-
-        rectangles2 = VGroup(*[
-            Rectangle(width=0.1, height=TAU * r * 0.1)
-            .set_stroke(RED, 1.5)
-            .shift(DOWN * 3)
-            .shift(LEFT * 2)
-
-            for r in list(range(0, 10, 1))
-        ])
-
-        rectangles2.arrange(RIGHT, center=False, aligned_edge=DOWN, buff=0)
-        self.play(Transform(rectangles, rectangles2))
-
-        rectangles3 = VGroup(*[
-            Rectangle(width=0.05, height=TAU * r * 0.05)
-            .set_stroke(RED, 1.5)
-            .shift(DOWN * 3)
-            .shift(LEFT * 2)
-
-            for r in list(range(0, 10 * 2, 1))
-        ])
-
-        rectangles3.arrange(RIGHT, center=False, aligned_edge=DOWN, buff=0)
-        self.play(Transform(rectangles, rectangles3))
-
-        rectangles4 = VGroup(*[
-            Rectangle(width=0.025, height=TAU * r * 0.025)
-            .set_stroke(RED, 1.5)
-            .shift(DOWN * 3)
-            .shift(LEFT * 2)
-
-            for r in list(range(0, 10 * 2 * 2, 1))
-        ])
-
-        rectangles4.arrange(RIGHT, center=False, aligned_edge=DOWN, buff=0)
-        self.play(Transform(rectangles, rectangles4))
+        for rect_size in [4, 5, 6, 8, 10, 20, 40, 60]:
+            rectangles_new = generate_rectangles(rect_size)
+            self.play(Transform(rectangles, rectangles_new))
 
         filled_triangle_points2 = [[0, 0, 0], [1, 0, 0], [1, TAU, 0]]
 
@@ -284,19 +165,10 @@ class AreaCirculo(Scene):
         self.wait(2)
         self.play(Write(texto2), FadeOut(eq))
         self.wait(2)
-        self.play(Write(texto3))
-        self.wait(2)
-        self.play(Write(texto4))
-        self.wait(2)
-        self.play(Write(texto5))
-        self.wait(2)
 
-        self.play(Write(texto6))
-        self.wait(2)
-        self.play(Write(texto7))
-        self.wait(2)
-        self.play(Write(texto8))
-        self.wait(2)
+        for anim in [Write(t) for t in [texto3, texto4, texto5, texto6, texto7, texto8]]:
+            self.play(anim)
+            self.wait(2)
 
         self.wait(2)
 
