@@ -7,6 +7,10 @@ lrl:
 lrf:
     just render_local manim.cfg 2160p60
 
+
+openk:
+    open /Users/alejandro/area_circulo/media/videos/main/2160p60/AreaCirculo.mp4 -a "QuickTime Player"
+
 render_local config quality:
     qil QuickTime
     manim \
