@@ -181,10 +181,19 @@ class AreaCirculo(Scene):
 
         self.wait(2)
 
+        fo_all(self)
+
     def parte0(self):
         pass
 
     def construct(self):
+        texto_inicial = Tex(r"Demostración de la fórmula $\pi r^2$")
+
+        self.play(Write(texto_inicial))
+        self.wait(1)
+
+        self.play(FadeOut(texto_inicial))
+
         # Sección 1: El área como un triángulo de círculos extendidos
         titulo = Text("El área como un triángulo")
         self.play(Write(titulo))
