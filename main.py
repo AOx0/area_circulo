@@ -549,241 +549,41 @@ class AreaCirculo(Scene):
         self.play(FadeOut(texto))
         self.parte3()
 
+        self.play(*[FadeOut(mob) for mob in self.mobjects])
+
+        texto = \
+            VGroup(*[Text(text, font_size=15) for text in [
+                r"Fuentes:",
+                r"Area del circulo mediante integración. (2012) [Video] https://youtu.be/cc5y5CRg3C8",
+                r"The Manim Community Developers. (2022). Manim (v0.15.1) [Computer software]. https://www.manim.community/",
+                r"Thea, T. (Tom1380). [Code Repository - SHA 29385ba] https://github.com/Tom1380/matike",
+                r"Osornio, A. (AOx0). [Code Repository] https://github.com/AOx0/area_circulo",
+                r"Area of a circle. Wikipedia. https://en.wikipedia.org/wiki/Area_of_a_circle",
+                r"Trigonometric substitution. Wikipedia. https://en.wikipedia.org/wiki/Trigonometric_substitution"
+            ]]).arrange(DOWN, 0.5, center=False).shift(UP * 2)
+
+        self.play(Write(texto))
+        self.wait(1)
+        self.play(FadeOut(texto))
+
         self.wait(1)
 
 
 class AreaCirculo2(Scene):
     def construct(self):
-        xax = Line([-10, 0, 0], [3, 0, 0]).shift(DOWN * 3)
-        yax = Line([0, -5, 0], [0, 4, 0]).shift(LEFT * 4).shift(DOWN * 0.5)
-        arc_c = Arc(3, 0, TAU / 4).shift(DOWN * 3).shift(LEFT * 4).set_stroke(RED, 2.5)
-        arc_c_4 = AnnularSector(0, 3, TAU / 4, 0).shift(DOWN * 3).shift(LEFT * 4).set_stroke(RED, 2.5).set_fill(RED, 0)
-        arc_c_t = Arc(3, 0, TAU).shift(DOWN * 3).shift(LEFT * 4).set_stroke(RED, 2.5).set_fill(RED, 0.8)
-        brace = BraceBetweenPoints([0, 0, 0], [3, 0, 0]).shift(LEFT * 4).shift(DOWN * 2.8).set_fill(GREY)
-        texto = MathTex(r"r").shift(LEFT * 2.5).shift(DOWN * 3.5)
+        texto = \
+            VGroup(*[Text(text, font_size=15) for text in [
+                r"Fuentes:",
+                r"Area del circulo mediante integración. (2012) [Video] https://youtu.be/cc5y5CRg3C8",
+                r"The Manim Community Developers. (2022). Manim (v0.15.1) [Computer software]. https://www.manim.community/",
+                r"Thea, T. (Tom1380). [Code Repository - SHA 29385ba] https://github.com/Tom1380/matike",
+                r"Osornio, A. (AOx0). [Code Repository] https://github.com/AOx0/area_circulo",
+                r"Area of a circle. Wikipedia. https://en.wikipedia.org/wiki/Area_of_a_circle",
+                r"Trigonometric substitution. Wikipedia. https://en.wikipedia.org/wiki/Trigonometric_substitution"
+            ]]).arrange(DOWN, 0.5, center=False).shift(UP * 2)
 
-        self.play(Write(xax), Write(yax))
-        self.play(Write(arc_c), Write(brace), Write(texto))
-        self.add_foreground_mobjects(xax, yax)
-
-        texto1 = MathTex(r"f (x) = \sqrt{r^2 - x^2}")
-        texto2 = MathTex(r"\int_0^r \sqrt{r^2 - x^2} \, dx").shift(RIGHT * 0.18)
-        texto3 = MathTex(r"4 \int_0^r \sqrt{r^2 - x^2} \, dx")
-        texto6 = MathTex(r"y = \sqrt{r^2 - x^2}")
-        texto7 = MathTex(r"x")
-        texto8 = MathTex(r"r")
-        texto9 = MathTex(r"\theta")
-        texto10 = MathTex(r"\sin \theta = \frac{x}{r}")
-        texto11 = MathTex(r"x := r \sin \theta")
-        texto12 = MathTex(r"dx := r \cos \theta \, d\theta")
-        texto13 = MathTex(r"\lim_{x \to 0} \theta = \sin^{-1}(\frac{0}{r}) = 0")
-        texto14 = MathTex(r"\lim_{x \to r} \theta = \sin^{-1}(\frac{r}{r}) = \frac{\pi}{2}")
-        texto15 = MathTex(r"4 \int_0^{\frac{\pi}{2}} \sqrt{r^2 - (r \sin\theta)^2}\,  r \cos \theta \, d\theta ")
-        texto16 = MathTex(r"= 4 \int_0^{\frac{\pi}{2}} \sqrt{r^2 - r^2 \sin^2 \theta}\,  r \cos \theta \, d\theta ")
-        texto17 = MathTex(r"= 4 \int_0^{\frac{\pi}{2}} \sqrt{r^2(1 - \sin^2 \theta)}\,  r \cos \theta \, d\theta ")
-        texto18 = MathTex(r"= 4 \int_0^{\frac{\pi}{2}} r \sqrt{1 - \sin^2 \theta}\,  r \cos \theta \, d\theta ")
-        texto19 = MathTex(r"= 4 \int_0^{\frac{\pi}{2}} r^2 \sqrt{1 - \sin^2 \theta}\, \cos \theta \, d\theta ")
-        texto20 = MathTex(r"= 4 \int_0^{\frac{\pi}{2}} r^2 \sqrt{\cos^2 \theta}\, \cos \theta \, d\theta ")
-        texto21 = MathTex(r"= 4 \int_0^{\frac{\pi}{2}} r^2 \cos \theta \cos \theta \, d\theta ")
-        texto22 = MathTex(r"= 4 \int_0^{\frac{\pi}{2}} r^2 \cos^2 \theta \, d\theta ")
-        texto23 = MathTex(r"=4 \int_0^{\frac{\pi}{2}} r^2 \left( \frac{1}{2}(1+\cos 2\theta) \right) \, d\theta ")
-        texto24 = MathTex(r"= 4r^2 \int_0^{\frac{\pi}{2}} \frac{1}{2}(1+\cos 2\theta) \, d\theta ")
-        texto25 = MathTex(r"= 2r^2 \left[ \int_0^{\frac{\pi}{2}} 1 \, d\theta + \int_0^{\frac{\pi}{2}} \cos 2\theta) \, d\theta \right]")
-        texto26 = MathTex(
-            r"= 2r^2 \left[ \theta + \frac{\sin 2\theta}{2} \right]_0^{\frac{\pi}{2}}")
-        texto27 = MathTex(
-            r"= 2r^2 \left[ \left( \frac{\pi}{2} + \frac{\sin 2\frac{\pi}{2} }{2} \right) - \left( 0 + \frac{\sin 0}{2} \right) \right]")
-        texto28 = MathTex(
-            r"= 2r^2 \left[ \frac{\pi}{2} + \frac{\sin 2\frac{\pi}{2} }{2} \right]")
-        texto29 = MathTex(
-            r"= 2r^2 \left[ \frac{\pi}{2} + \frac{\sin \pi }{2} \right]")
-        texto30 = MathTex(
-            r"= 2r^2 \left[ \frac{\pi + \sin \pi}{2} \right]")
-        texto31 = MathTex(
-            r"= 2r^2 \left[ \frac{\pi + 0}{2} \right]")
-        texto32 = MathTex(
-            r"= r^2 \left[ \pi \right]")
-        texto33 = MathTex(
-            r"= \pi r^2")
-        angle = Arc(1, 0, 3 / 4.5).shift(DOWN).shift(RIGHT * 1.5)
-        filled_triangle_points2 = [[0, 0, 0], [4, 3, 0], [4, 0, 0]]
-
-        filled_triangle2 = Polygon(*filled_triangle_points2, color=RED).shift(DOWN).shift(RIGHT * 1.5)
-        texto6.shift(DOWN * 1.8).shift(RIGHT * 3.5)
-        texto8.shift(UP).shift(RIGHT * 3)
-        texto7.shift(UP * 0.5).shift(RIGHT * 6.2)
-        texto9.shift(DOWN * 0.6).shift(RIGHT * 2.9)
-        texto10.shift(LEFT * 0.5)
-
-        self.play(Write(texto1))
-
-        self.wait(2)
-
-        self.play(arc_c_4.animate.set_fill(RED, 0.8), Transform(texto1, texto2))
+        self.play(Write(texto))
+        self.wait(1)
+        self.play(FadeOut(texto))
 
         self.wait(1)
-
-        self.play(FadeOut(brace), FadeOut(texto), FadeIn(texto3), FadeIn(arc_c_t))
-        self.remove(texto1)
-
-        self.play(texto3.animate.shift(UP * 2.5))
-        self.wait(0.5)
-
-        self.play(Create(filled_triangle2), Write(texto6), Write(texto9), Write(texto8), Write(texto7), Write(angle))
-        self.wait(0.5)
-        self.play(Write(texto10))
-
-        texto10.shift(UP)
-        texto11.next_to(texto10, DOWN)
-        texto10.shift(DOWN)
-
-        self.play(texto10.animate.shift(UP))
-        self.play(Write(texto11))
-
-        self.play(
-            FadeOut(filled_triangle2), FadeOut(texto6), FadeOut(texto9),
-            FadeOut(texto8), FadeOut(texto7), FadeOut(angle),
-            FadeOut(xax), FadeOut(yax), FadeOut(arc_c), FadeOut(arc_c_4), FadeOut(arc_c_t)
-        )
-
-        self.play(*[mob.animate.shift(2 * LEFT) for mob in self.mobjects])
-
-        texto12.next_to(texto11, DOWN, 0.5)
-
-        self.play(Write(texto12))
-
-        texto13.next_to(texto10, RIGHT, 1.5)
-        texto14.next_to(texto13, DOWN, 0.5)
-
-        self.wait(0.5)
-
-        self.play(Write(texto13), Write(texto14))
-
-        self.wait(1)
-
-        texto15.move_to(texto3)
-
-        self.play(FadeTransformPieces(texto3, texto15))
-
-        self.wait(1)
-
-        self.play(*[FadeOut(obj) for obj in [texto10, texto12, texto11, texto13, texto14]])
-
-        angle2 = VGroup(Arc(1, TAU / 4, 0).shift(DOWN * 3).shift(LEFT * 4))
-        texto9.next_to(angle2, RIGHT)
-
-        angle2 = VGroup()
-
-        self.play(
-            *[mob.animate.shift(2 * RIGHT) for mob in self.mobjects],
-            *[FadeIn(obj) for obj in [xax, yax]]
-        )
-
-        self.add_foreground_mobjects(angle2)
-
-        red_sector = VGroup(
-            Sector(
-                outer_radius=3,
-                inner_radius=0,
-                angle=0,
-                start_angle=0,
-                stroke_width=1.5,
-                fill_opacity=0.8,
-                fill_color=RED,
-                stroke_color=RED
-            ).shift(DOWN * 3).shift(LEFT * 4),
-            (j := Arc(1, 0, 0).shift(DOWN * 3).shift(LEFT * 4)),
-            MathTex(r"\theta").next_to(j, RIGHT).shift(UP)
-        )
-
-        red_sector.save_state()
-
-        def update_sector(mob, alpha):
-            mob.restore()
-            mob.become(
-                VGroup(*[Sector(
-                    outer_radius=3,
-                    inner_radius=0,
-                    angle=interpolate(0, TAU / 4, alpha),
-                    start_angle=0,
-                    stroke_width=1.5,
-                    fill_opacity=0.8,
-                    fill_color=RED,
-                    stroke_color=RED
-                ).shift(DOWN * 3).shift(LEFT * 4),
-                         (j := Arc(
-                             radius=1,
-                             angle=interpolate(0, TAU / 4, alpha)
-                         ).shift(DOWN * 3).shift(LEFT * 4)),
-                         MathTex(r"\theta").next_to(j, RIGHT).shift(UP * 0.5).shift(LEFT * 0.5)
-                         ])
-            )
-
-        def update_sector_2(mob, alpha):
-            mob.restore()
-            mob.become(
-                VGroup(*[Sector(
-                    outer_radius=3,
-                    inner_radius=0,
-                    angle=interpolate(TAU / 4, 0, alpha),
-                    start_angle=0,
-                    stroke_width=1.5,
-                    fill_opacity=0.8,
-                    fill_color=RED,
-                    stroke_color=RED
-                ).shift(DOWN * 3).shift(LEFT * 4),
-                         (j := Arc(
-                             radius=1,
-                             angle=interpolate(TAU / 4, 0, alpha)
-                         ).shift(DOWN * 3).shift(LEFT * 4)),
-                         MathTex(r"\theta").next_to(j, RIGHT).shift(UP * 0.5).shift(LEFT * 0.5)
-                         ])
-            )
-
-        self.play(
-            UpdateFromAlphaFunc(red_sector, update_sector)
-        )
-        red_sector.save_state()
-
-        self.play(
-            UpdateFromAlphaFunc(red_sector, update_sector_2)
-        )
-
-        self.play(
-            UpdateFromAlphaFunc(red_sector, update_sector)
-        )
-        self.wait(1)
-
-        self.play(FadeOut(red_sector), FadeOut(xax), FadeOut(yax))
-
-        self.play(*[FadeOut(mob) for mob in self.mobjects])
-
-        texto15.scale(0.65).shift(LEFT * 3).shift(UP * 0.5)
-
-        self.play(Write(texto15))
-
-        texto16.scale(0.65).next_to(texto15, DOWN)
-        self.play(Write(texto16))
-
-        texts = [texto16, texto17, texto18, texto19, texto20, texto21]
-        for a in range(1, len(texts)):
-            texts[a].scale(0.65).next_to(texts[a-1], DOWN)
-            self.play(Write(texts[a]))
-
-        texto22.scale(0.65).next_to(texto15, RIGHT, 1.5)
-        self.play(Write(texto22))
-
-        texts = [texto22, texto23, texto24, texto25, texto26, texto27, texto28]
-        for a in range(1, len(texts)):
-            texts[a].scale(0.65).next_to(texts[a - 1], DOWN)
-            self.play(Write(texts[a]))
-
-        self.play(*[FadeOut(mob) for mob in self.mobjects])
-
-        texto28.move_to(texto15)
-        self.play(Write(texto28))
-
-        texts = [texto28, texto29, texto30, texto31, texto32, texto33]
-        for a in range(1, len(texts)):
-            texts[a].scale(0.65).next_to(texts[a - 1], DOWN)
-            self.play(Write(texts[a]))
